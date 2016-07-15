@@ -1,6 +1,9 @@
 from flask import render_template, flash, redirect
+import datetime
 from app import app
+from app import db, models
 from .forms import LoginForm
+from .forms import SubmitPost
 
 @app.route('/index')
 @app.route('/')
@@ -11,45 +14,68 @@ def home():
 def about():
 	return render_template('about.html')
 
-@app.route("/show_config")
-def show_config():
-	querystring_args = request.args.to_dict()
-	post_args = request.form.to_dict()
-	return jsonify(
-		debug=current_app.config.get('DEBUG'),
-		args=querystring_args,
-		vars=post_args
-    )
-
-@app.route('/noticias')
-def noticias():
-	user = {'nickname': 'Miguel'}
-	posts = [
-		{ 
-			'author': {'nickname': 'John'}, 
-			'body': 'Beautiful day in Portland!' 
- 		},
-		{ 
-			'author': {'nickname': 'Susan'}, 
-			'body': 'The Avengers movie was so cool!' 
-		}
-	]
-	return render_template('noticias.html',
-							title='Noticias',
+@app.route('/news')
+def news():
+	user = models.User.query.all()
+	posts = models.Post.query.all()
+	return render_template('news.html',
+							title='New Posts',
 							user=user,
 							posts=posts)
 
-@app.route('/submeter')
-def submeter():
-	return render_template('submeter.html')
+@app.route('/post', methods=['GET', 'POST'])
+def post():
+	form = SubmitPost()
+
+	# if the fields is valid
+	if form.validate_on_submit():
+		users = models.User.query.all()
+
+		for u in users:
+			# Checking if the user is regitered
+			nickname = u.nickname
+			if form.openid.data == nickname:
+				postMsg = models.Post(body=form.post.data, timestamp=datetime.datetime.utcnow(), author=u)
+				db.session.add(postMsg)
+				db.session.commit()
+				return redirect('/news')
+
+		flash('This user isn\'t registered')
+		return redirect ('/login')
+
+	return render_template('post.html',
+							title='Submite post',
+							form=form)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
+
+    # If the fields is valid
     if form.validate_on_submit():
-        flash('Login requested for OpenID="%s", remember_me=%s' %
-              (form.openid.data, str(form.remember_me.data)))
+    	users = models.User.query.all()
+    	
+    	for u in users:
+    		# Checking if the user is already registered
+    		x = u.nickname
+    		if form.openid.data == x:
+    			flash('This username is already in use. Chose another one.')
+    			return redirect('/login')
+
+    		# Checking if the email is already registered
+    		x = u.email
+    		if form.openid.data == x:
+    			flash('This email is already registered. Use another one.')
+    			return redirect('/login')
+
+    	# Registering user
+    	userName = models.User(nickname=form.openid.data, email=form.email.data)
+    	db.session.add(userName)
+    	db.session.commit()
+        flash('Hello %s. Welcome to FORUM.' %
+              (form.openid.data))
         return redirect('/index')
+
     return render_template('login.html', 
                            title='Sign In',
                            form=form)

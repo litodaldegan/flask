@@ -9,7 +9,9 @@
         <h1>{{title}}</h1>
         
         {% for post in posts %}
-   			<div><p><i>{{ post.author.nickname }}</i> says: <b>{{ post.body }}</b></p></div>
+   			<div class="jumbo">
+                <h3 class="post"><p><u>{{ post.author.nickname }}</u> ({{ post.timestamp.day }}/{{ post.timestamp.month }}/{{ post.timestamp.year }}) says: <b>{{ post.body }}</b></p></h3>
+            </div>
     	{% endfor %}
        
     	</body>

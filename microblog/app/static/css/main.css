@@ -53,6 +53,14 @@ h2 {
   text-align: center;
   letter-spacing: -2px;
 }
+
+h2.erro {
+  color:  #a81041;
+  font-size: 1em;
+  margin-top: 5px;
+  text-align: left;
+  letter-spacing: 1px;
+}
  
 h3 {
   font-size: 1.7em;
@@ -61,6 +69,16 @@ h3 {
   text-align: center;
   letter-spacing: -1px;
   color: #999;
+}
+
+h3.post {
+  font-size: 1.1em;
+  font-weight: 70;
+  margin-top: 10px;
+  margin-left: 20px;
+  text-align: left;
+  letter-spacing: -1px;
+  color: #888;
 }
 
 /*
@@ -81,6 +99,9 @@ h3 {
 }
  
 .menu li a {
+  border: 1px solid;
+  border-radius: 5px;
+  border-color: #999;
   color: #999;
   text-decoration: none;
 }

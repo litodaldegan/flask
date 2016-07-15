@@ -17,9 +17,9 @@
             <ul class="menu">
               <li><a href="{{ url_for('home') }}">Home</a></li>
               <li><a href="{{ url_for('about') }}">About</a></li>
-              <li><a href="{{ url_for('noticias') }}">Noticias</a></li>
-              <li><a href="{{ url_for('submeter') }}">Submeter</a></li>
-              <li><a href="{{ url_for('login') }}">Login</a></li>
+              <li><a href="{{ url_for('news') }}">News</a></li>
+              <li><a href="{{ url_for('post') }}">Make a Post</a></li>
+              <li><a href="{{ url_for('login') }}">Sign in</a></li>
             </ul>
           </nav></strong>
       </div>
@@ -29,7 +29,7 @@
       {% if messages %}
         <ul>
           {% for message in messages %}
-            <li>{{ message.OpenID }} </li>
+            <li><h2 class="erro">{{ message }}</h2></li>
           {% endfor %}
         </ul>
       {% endif %}
