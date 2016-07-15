@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+  
+{% block content %}
+    <html>
+    	<head><title>{{title}}</title></head>
+    	
+    	<body>
+        
+        <h1>{{title}}</h1>
+        
+        {% for post in posts %}
+   			<div><p><i>{{ post.author.nickname }}</i> says: <b>{{ post.body }}</b></p></div>
+    	{% endfor %}
+       
+    	</body>
+    </html>
+{% endblock %}
