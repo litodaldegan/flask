@@ -14,6 +14,7 @@ def home():
 def about():
 	return render_template('about.html')
 
+
 @app.route('/news')
 def news():
 	user = models.User.query.all()
@@ -22,6 +23,29 @@ def news():
 							title='New Posts',
 							user=user,
 							posts=posts)
+
+@app.route('/newsmonth/<int:month>')
+def newsmonth(month):
+	if month == None:
+		return redirect('/news')
+
+	user = models.User.query.all()
+	posts = models.Post.query.all()
+	posts2 = []
+
+	for p in posts:
+		if p.timestamp.month == month:	
+			posts2.append(p)
+
+	return render_template('news.html',
+							title='New Posts',
+							user=user,
+							posts=posts2)
+
+# Outro meio de fazer o roteamento
+app.add_url_rule("/news2/",
+					endpoint="news",
+					view_func=news)
 
 @app.route('/post', methods=['GET', 'POST'])
 def post():

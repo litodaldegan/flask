@@ -77,7 +77,7 @@ h3.post {
   margin-top: 10px;
   margin-left: 20px;
   text-align: left;
-  letter-spacing: -1px;
+  letter-spacing: +1px;
   color: #888;
 }
 

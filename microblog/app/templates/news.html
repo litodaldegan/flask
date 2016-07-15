@@ -6,13 +6,21 @@
     	
     	<body>
         
-        <h1>{{title}}</h1>
-        
-        {% for post in posts %}
-   			<div class="jumbo">
-                <h3 class="post"><p><u>{{ post.author.nickname }}</u> ({{ post.timestamp.day }}/{{ post.timestamp.month }}/{{ post.timestamp.year }}) says: <b>{{ post.body }}</b></p></h3>
-            </div>
-    	{% endfor %}
+        <h2>{{title}}</h2>
+
+            {% for post in posts %}
+       			<div class="jumbo">
+
+                    <h3 class="post">
+                        
+                        <p><u>{{ post.author.nickname }}</u> ({{ post.timestamp.day }}/{{ post.timestamp.month }}/{{ post.timestamp.year }}) says: <b>{{ post.body }}</b></p>
+                    </h3>
+                </div>
+            {% else %}
+                <div class="jumbo">
+                    <h3>None post this month</h3>
+                </div>
+            {% endfor %}
        
     	</body>
     </html>
