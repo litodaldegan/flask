@@ -1,11 +1,14 @@
-from flask import render_template, flash, redirect
-import datetime
+from flask import render_template, flash, redirect, url_for
+from flask import request, make_response, escape, session
+from werkzeug import secure_filename
+import datetime, os
 from app import app
 from app import db, models
 from .forms import LoginForm
 from .forms import SubmitPost
 
 @app.route('/index')
+@app.route('/home')
 @app.route('/')
 def home():
 	return render_template('home.html')
@@ -48,7 +51,7 @@ app.add_url_rule("/news2/",
 					view_func=news)
 
 @app.route('/post', methods=['GET', 'POST'])
-def post():
+def post():	
 	form = SubmitPost()
 
 	# if the fields is valid
@@ -65,14 +68,39 @@ def post():
 				return redirect('/news')
 
 		flash('This user isn\'t registered')
-		return redirect ('/login')
+		return redirect ('/signin')
 
+	# If the user is already log in
+	elif 'username' in session:
+		if form.post.data:
+			users = models.User.query.all()
+
+			nickname = session['username']
+			
+			for u in users:
+				# Checking if the user is regitered
+				print nickname
+				print u
+				if u.nickname == nickname:
+					postMsg = models.Post(body=form.post.data, timestamp=datetime.datetime.utcnow(), author=u)
+					db.session.add(postMsg)
+					db.session.commit()
+					# Logging user
+					session['username'] = u.nickname
+					return redirect('/news')
+
+		else:
+			return render_template('postByKnowUser.html',
+									user=escape(session['username']),
+									title='Submite post',
+									form=form)
+	
 	return render_template('post.html',
 							title='Submite post',
 							form=form)
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
+@app.route('/signin', methods=['GET', 'POST'])
+def signin():
     form = LoginForm()
 
     # If the fields is valid
@@ -84,22 +112,50 @@ def login():
     		x = u.nickname
     		if form.openid.data == x:
     			flash('This username is already in use. Chose another one.')
-    			return redirect('/login')
+    			return redirect('/signin')
 
     		# Checking if the email is already registered
     		x = u.email
     		if form.openid.data == x:
     			flash('This email is already registered. Use another one.')
-    			return redirect('/login')
+    			return redirect('/signin')
 
     	# Registering user
-    	userName = models.User(nickname=form.openid.data, email=form.email.data)
-    	db.session.add(userName)
+		session['username'] = form.openid.data
+    	user = models.User(nickname=form.openid.data, email=form.email.data)
+    	db.session.add(user)
     	db.session.commit()
         flash('Hello %s. Welcome to FORUM.' %
               (form.openid.data))
         return redirect('/index')
 
-    return render_template('login.html', 
+    return render_template('signin.html', 
                            title='Sign In',
                            form=form)
+
+@app.errorhandler(404)
+def page_not_found(error):
+	resp = make_response(render_template('page_not_found.html'), 404)
+	resp.headers['X-Something'] = 'A value'
+	return resp
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        session['username'] = request.form['username']
+        return redirect(url_for('home'))
+    return '''
+        <form action="" method="post">
+            <p><input type=text name=username>
+            <p><input type=submit value=Login>
+        </form>
+    '''
+
+@app.route('/logout')
+def logout():
+    # remove the username from the session if it's there
+    session.pop('username', None)
+    return redirect(url_for('home'))
+
+# set the secret key.  keep this really secret:
+app.secret_key = os.urandom(24)
