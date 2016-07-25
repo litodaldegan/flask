@@ -12,5 +12,5 @@ db = SQLAlchemy(app)
 from webPage.views import webPage_blueprint
 
 # registring the blueprint
-app.register_blueprint(webPage_blueprint)
+app.register_blueprint(webPage.views.webPage_blueprint)
 

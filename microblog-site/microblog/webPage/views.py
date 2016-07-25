@@ -1,17 +1,16 @@
 from flask import (
 	request, make_response, escape, session, Blueprint,
-	render_template, flash, redirect, url_for
+	render_template, flash, redirect, url_for, jsonify, json
 )
 from werkzeug import secure_filename
 import datetime, os
 from ..webPage import models
 from .models import db
-from .forms import LoginForm
+from .forms import SigninForm
 from .forms import SubmitPost
 
 webPage_blueprint = Blueprint('webPage',__name__,
-								template_folder='templates',
-								static_folder='static')
+								template_folder='templates')
 
 @webPage_blueprint.route('/index')
 @webPage_blueprint.route('/home')
@@ -26,12 +25,11 @@ def about():
 
 @webPage_blueprint.route('/news')
 def news():
-	user = models.User.query.all()
+	users = models.User.query.all()
 	posts = models.Post.query.all()
-	posts.reverse()
 	return render_template('news.html',
 							title='New Posts',
-							user=user,
+							users=users,
 							posts=posts)
 
 @webPage_blueprint.route('/newsmonth/<int:month>')
@@ -52,11 +50,6 @@ def newsmonth(month):
 							user=user,
 							posts=posts2)
 
-# # Outro meio de fazer o roteamento
-# app.add_url_rule("/news2/",
-# 					endpoint="news",
-# 					view_func=news)
-
 @webPage_blueprint.route('/post', methods=['GET', 'POST'])
 def post():	
 	form = SubmitPost()
@@ -69,9 +62,9 @@ def post():
 			# Checking if the user is regitered
 			nickname = u.nickname
 			if form.openid.data == nickname:
-				postMsg = models.Post(body=form.post.data,
-										timestamp=datetime.datetime.utcnow(),
-										author=u)
+				postMsg = models.Post(user_id=u.id,
+										body=form.post.data,
+										timestamp=datetime.datetime.utcnow())
 				db.session.add(postMsg)
 				db.session.commit()
 				return redirect('/news')
@@ -88,12 +81,10 @@ def post():
 			
 			for u in users:
 				# Checking if the user is regitered
-				print nickname
-				print u
 				if u.nickname == nickname:
-					postMsg = models.Post(body=form.post.data,
-											timestamp=datetime.datetime.utcnow(),
-											author=u)
+					postMsg = models.Post(user_id=u.id,
+											body=form.post.data,
+											timestamp=datetime.datetime.utcnow())
 					db.session.add(postMsg)
 					db.session.commit()
 					# Logging user
@@ -112,7 +103,7 @@ def post():
 
 @webPage_blueprint.route('/signin', methods=['GET', 'POST'])
 def signin():
-    form = LoginForm()
+    form = SigninForm()
 
     # If the fields is valid
     if form.validate_on_submit():
@@ -144,23 +135,52 @@ def signin():
                            title='Sign In',
                            form=form)
 
-@webPage_blueprint.errorhandler(404)
-def page_not_found(error):
-	resp = make_response(render_template('page_not_found.html'), 404)
-	resp.headers['X-Something'] = 'A value'
-	return resp
+@webPage_blueprint.route('/postTable')
+def postTable():
+	return render_template('postTable.html')
 
-@webPage_blueprint.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        session['username'] = request.form['username']
-        return redirect(url_for('home'))
-    return '''
-        <form action="" method="post">
-            <p><input type=text name=username>
-            <p><input type=submit value=Login>
-        </form>
-    '''
+@webPage_blueprint.route("/api-Posts")
+def api_Post():
+	posts = models.Post.query.all()
+	
+	jsPosts = []
+
+	for post in posts:
+		body = post.body
+		timestamp = post.timestamp
+		nickname = models.User.query.get(post.user_id).nickname
+		jsPosts.append({'body': body, 'timestamp': timestamp, 'nickname': nickname})
+
+	return jsonify(jsPosts)
+
+@webPage_blueprint.route('/userTable')
+def userTable():
+	return render_template('userTable.html')
+
+@webPage_blueprint.route("/api-Users")
+def api_Users():
+	users = models.User.query.all()
+
+	jsUsers = []
+
+	for user in users:
+		nickname = user.nickname
+		email = user.email
+		jsUsers.append({'nickname': nickname, 'email': email})
+
+	return jsonify(jsUsers)
+
+# @webPage_blueprint.route('/login', methods=['GET', 'POST'])
+# def login():
+#     if request.method == 'POST':
+#         session['username'] = request.form['username']
+#         return redirect(url_for('webPage.home'))
+#     return '''
+#         <form action="" method="post">
+#             <p><input type=text name=username>
+#             <p><input type=submit value=Login>
+#         </form>
+#     '''
 
 @webPage_blueprint.route('/logout')
 def logout():
