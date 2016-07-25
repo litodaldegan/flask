@@ -1,16 +1,14 @@
 from flask import (
-	request, make_response, escape, session, Blueprint,
-	render_template, flash, redirect, url_for, jsonify, json
+	make_response, escape, session, Blueprint,
+	render_template, flash, redirect, url_for, jsonify
 )
-from werkzeug import secure_filename
 import datetime, os
-from ..webPage import models
-from .models import db
+from microblog import models
+from microblog.models import db
 from .forms import SigninForm
 from .forms import SubmitPost
 
-webPage_blueprint = Blueprint('webPage',__name__,
-								template_folder='templates')
+webPage_blueprint = Blueprint('webPage', __name__, static_folder='./static', template_folder='./templates')
 
 @webPage_blueprint.route('/index')
 @webPage_blueprint.route('/home')
@@ -22,33 +20,11 @@ def home():
 def about():
 	return render_template('about.html')
 
-
 @webPage_blueprint.route('/news')
-def news():
-	users = models.User.query.all()
+def news():	
 	posts = models.Post.query.all()
 	return render_template('news.html',
-							title='New Posts',
-							users=users,
 							posts=posts)
-
-@webPage_blueprint.route('/newsmonth/<int:month>')
-def newsmonth(month):
-	if month == None:
-		return redirect('/news')
-
-	user = models.User.query.all()
-	posts = models.Post.query.all()
-	posts2 = []
-
-	for p in posts:
-		if p.timestamp.month == month:	
-			posts2.append(p)
-
-	return render_template('news.html',
-							title='New Posts',
-							user=user,
-							posts=posts2)
 
 @webPage_blueprint.route('/post', methods=['GET', 'POST'])
 def post():	
@@ -61,7 +37,7 @@ def post():
 		for u in users:
 			# Checking if the user is regitered
 			nickname = u.nickname
-			if form.openid.data == nickname:
+			if form.userName.data == nickname:
 				postMsg = models.Post(user_id=u.id,
 										body=form.post.data,
 										timestamp=datetime.datetime.utcnow())
@@ -112,23 +88,23 @@ def signin():
     	for u in users:
     		# Checking if the user is already registered
     		x = u.nickname
-    		if form.openid.data == x:
+    		if form.userName.data == x:
     			flash('This username is already in use. Chose another one.')
     			return redirect('/signin')
 
     		# Checking if the email is already registered
     		x = u.email
-    		if form.openid.data == x:
+    		if form.userName.data == x:
     			flash('This email is already registered. Use another one.')
     			return redirect('/signin')
 
     	# Registering user
-		session['username'] = form.openid.data
-    	user = models.User(nickname=form.openid.data, email=form.email.data)
+		session['username'] = form.userName.data
+    	user = models.User(nickname=form.userName.data, email=form.email.data)
     	db.session.add(user)
     	db.session.commit()
         flash('Hello %s. Welcome to FORUM.' %
-              (form.openid.data))
+              (form.userName.data))
         return redirect('/index')
 
     return render_template('signin.html', 
@@ -187,6 +163,25 @@ def logout():
     # remove the username from the session if it's there
     session.pop('username', None)
     return redirect(url_for('webPage.home'))
+
+
+@webPage_blueprint.route('/newsmonth/<int:month>')
+def newsmonth(month):
+	if month == None:
+		return redirect('/news')
+
+	user = models.User.query.all()
+	posts = models.Post.query.all()
+	posts2 = []
+
+	for p in posts:
+		if p.timestamp.month == month:	
+			posts2.append(p)
+
+	return render_template('news.html',
+							title='New Posts',
+							user=user,
+							posts=posts2)
 
 # set the secret key.  keep this really secret:
 webPage_blueprint.secret_key = os.urandom(24)
