@@ -79,35 +79,35 @@ def post():
 
 @webPage_blueprint.route('/signin', methods=['GET', 'POST'])
 def signin():
-    form = SigninForm()
+	form = SigninForm()
 
-    # If the fields is valid
-    if form.validate_on_submit():
-    	users = models.User.query.all()
-    	
-    	for u in users:
-    		# Checking if the user is already registered
-    		x = u.nickname
-    		if form.userName.data == x:
-    			flash('This username is already in use. Chose another one.')
-    			return redirect('/signin')
+	# If the fields is valid
+	if form.validate_on_submit():
+		users = models.User.query.all()
 
-    		# Checking if the email is already registered
-    		x = u.email
-    		if form.userName.data == x:
-    			flash('This email is already registered. Use another one.')
-    			return redirect('/signin')
+		for u in users:
+			# Checking if the user is already registered
+			x = u.nickname
+			if form.userName.data == x:
+				flash('This username is already in use. Chose another one.')
+				return redirect('/signin')
 
-    	# Registering user
+			# Checking if the email is already registered
+			x = u.email
+			if form.userName.data == x:
+				flash('This email is already registered. Use another one.')
+				return redirect('/signin')
+
+		# Registering user
 		session['username'] = form.userName.data
-    	user = models.User(nickname=form.userName.data, email=form.email.data)
-    	db.session.add(user)
-    	db.session.commit()
-        flash('Hello %s. Welcome to FORUM.' %
-              (form.userName.data))
-        return redirect('/index')
+		user = models.User(nickname=form.userName.data, email=form.email.data, password=form.password.data)
+		db.session.add(user)
+		db.session.commit()
+		flash('Hello %s. Welcome to FORUM.' %
+			(form.userName.data))
+		return redirect('/index')
 
-    return render_template('signin.html', 
+	return render_template('signin.html', 
                            title='Sign In',
                            form=form)
 

@@ -7,6 +7,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nickname = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
+    password = db.Column(db.String(20))
     posts = db.relationship('Post', backref='author', lazy='dynamic', cascade='all, delete-orphan')
 
     def __repr__(self):
