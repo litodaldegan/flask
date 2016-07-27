@@ -1,9 +1,21 @@
-
+var jobsData = (function () {
+    var jobsData = null;
+    $.ajax({
+        'async': false,
+        'global': false,
+        'url': "http://localhost:5000/api-Jobs",
+        'dataType': "json",
+        'success': function (data) {
+            jobsData = data;
+        }
+    });
+    return jobsData;
+})();
 
 // instantiate d3plus
 var visualization = d3plus.viz()
   .container("#viz")  // container DIV to hold the visualization
-  .data(data)  // data to use with the visualization
+  .data(jobsData)  // data to use with the visualization
   .type("tree_map")   // visualization type
   .id("Initial")         // key for which our data is unique on
   .size("Jobs")      // sizing of blocks
@@ -30,14 +42,3 @@ var visualization = d3plus.viz()
     })
   .tooltip(["State", "Jobs", "Total Employees", "Total Salary", "Average Salary"])
   .draw();            // finally, draw the visualization!
-
-
-var visualization2 = d3plus.viz()
-    .container("#viz")
-    .data(data)
-    .type("bar")
-    .id("Initial")
-    .x({"stacked": true, "value": "Jobs"})
-    .y("year")
-    .time("year")
-    .draw()
