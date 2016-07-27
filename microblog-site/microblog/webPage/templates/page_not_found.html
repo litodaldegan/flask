@@ -1,6 +1,13 @@
-{% extends "layout.html" %}
+{% if user %}
+    {% extends "layoutL.html" %}
+{% else %}
+    {% extends "layout.html" %}
+{% endif %}
+
 {% block content %}
+
   <div class="jumbo">
     <h2>Page not found, sorry :(.<h2>
   </div>
+  
 {% endblock %}

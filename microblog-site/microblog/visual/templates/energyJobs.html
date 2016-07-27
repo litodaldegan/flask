@@ -1,0 +1,19 @@
+{% if user %}
+    {% extends "layoutL.html" %}
+{% else %}
+    {% extends "layout.html" %}
+{% endif %}
+
+{% block content %}
+
+<!-- load D3plus with all dependencies -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3plus/1.9.5/d3plus.full.min.js"></script>
+
+<h3>Analysis of the number of jobs in states of Brazil.</h3>
+
+<!-- create container element for visualization -->
+<div class="visu" id="viz"></div>
+
+<script src="{{ url_for('static', filename='js/treemap.js') }}"></script>
+
+{% endblock %}

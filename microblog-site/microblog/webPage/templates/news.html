@@ -1,6 +1,11 @@
-{% extends "layout.html" %}
-  
+{% if user %}
+    {% extends "layoutL.html" %}
+{% else %}
+    {% extends "layout.html" %}
+{% endif %}
+
 {% block content %}
+
     <html>
     	<head><title>{{title}}</title></head>
     	
