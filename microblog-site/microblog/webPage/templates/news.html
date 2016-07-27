@@ -1,6 +1,11 @@
-{% extends "layout.html" %}
-  
+{% if user %}
+    {% extends "layoutL.html" %}
+{% else %}
+    {% extends "layout.html" %}
+{% endif %}
+
 {% block content %}
+
     <html>
     	<head><title>{{title}}</title></head>
     	
@@ -15,6 +20,7 @@
                         <p><u>{{ post.author.nickname }}</u> ({{ post.timestamp.day }}/{{ post.timestamp.month }}/{{ post.timestamp.year }}) says: <b>{{ post.body }}</b></p>
                     </h3>
                 </div>
+            <br/>
             {% else %}
                 <div class="jumbo">
                     <h3>None post this month</h3>

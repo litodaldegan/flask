@@ -1,8 +1,12 @@
-{% extends "layout.html" %}
+{% if user %}
+    {% extends "layoutL.html" %}
+{% else %}
+    {% extends "layout.html" %}
+{% endif %}
   
 {% block content %}
   <h2>About</h2>
   <div class="jumbo">
-  	<p>This page is a trainning for flask and python.</p>
+  	<h3 class="post"><p>This page is a trainning for flask and python.</p></h3>
   </div>
 {% endblock %}

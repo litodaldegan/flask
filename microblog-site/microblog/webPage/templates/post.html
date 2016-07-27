@@ -1,23 +1,17 @@
-{% extends "layout.html" %}
-  
+{% extends "layoutL.html" %}
 {% block content %}
-  <h1>Make a post</h1>
+
+  <h1>Hello {{ user }}, make a post.</h1>
   
   <form action="" method="post" name="login">
       {{ form.hidden_tag() }}
       <p>
-          Please enter your OpenID:<br>
-          {{ form.openid(size=80) }}
-          {% for error in form.openid.errors %}
-            <span style="color: red;">[{{error}}]</span>
-          {% endfor %}<br>
           Your post:<br>  
           {{ form.post(size=140) }}
           {% for erro in form.post.errors %}
             <span style="color: red">[{{error}}]</span>
           {% endfor %}
       </p>
-      <p>{{ form.remember_me }} Remember Me</p>
       <p><input type="submit" value="Post"></p>
   </form>
 
