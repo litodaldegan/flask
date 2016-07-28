@@ -17,8 +17,8 @@ var visualization = d3plus.viz()
   .container("#viz")  // container DIV to hold the visualization
   .data(jobsData)  // data to use with the visualization
   .type("tree_map")   // visualization type
-  .id("Initial")         // key for which our data is unique on
-  .size("Jobs")      // sizing of blocks
+  .id("initial")         // key for which our data is unique on
+  .size("jobs")      // sizing of blocks
   .legend({"size": 40})  // change the size of the label in bottom of the visualization
   .time({
         "value": "year",
@@ -27,18 +27,18 @@ var visualization = d3plus.viz()
   .ui([
       {
         "method" : "size",
-        "value"  : [ "Jobs" , "Total Employees", "Average Salary" ]
+        "value"  : [ "jobs" , "totalEmployees", "avgSalary" ]
       },
       {
         "method" : "color",
-        "value"  : [ "State" , "Jobs" ]
+        "value"  : [ "State" , "jobs" ]
       }
   ])
   .labels({"align": "left", "valign": "top"})  //Show percent label
   .title({"total": true})
   .footer({                                    // put a footer write
       "link": "http://dataviva.info/en/",
-      "Jobs": "Click here to go to DataViva and see much more."
+      "jobs": "Click here to go to DataViva and see much more."
     })
-  .tooltip(["State", "Jobs", "Total Employees", "Total Salary", "Average Salary"])
+  .tooltip(["State", "jobs", "totalEmployees", "Total Salary", "avgSalary"])
   .draw();            // finally, draw the visualization!

@@ -23,3 +23,15 @@ class Post(db.Model):
 
     def __repr__(self):
         return 'title: ' + self.text + ', id: ' + str(self.id)
+
+# defining the table for data to visualizations
+class Job(db.Model):
+    __tablename__ = 'job'
+    id = db.Column(db.Integer, primary_key=True)
+    state = db.Column(db.String(128), index=True)
+    initial = db.Column(db.String(32), index=True)
+    jobs = db.Column(db.Integer)
+    totalEmployees = db.Column(db.Integer)
+    totalSalary = db.Column(db.Integer)
+    avgSalary = db.Column(db.Integer)
+    year = db.Column(db.Integer)

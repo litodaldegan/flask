@@ -25,10 +25,18 @@
               <a href="#">Graphics</a>
               <ul>
                   <li><a href="{{ url_for('visual.energyJobs') }}">Jobs in energy sector</a></li>
-                  <li><a href="#">Graphic design</a></li>
+                  <li><a href="{{ url_for('visual.energyJobsStacked') }}">Jobs bellow the years</a></li>
               </ul>
               </li>
 
+              <li>
+              <a href="#">Data Table</a>
+              <ul>
+                  <li><a href="{{ url_for('webPage.userTable') }}">User</a></li>
+                  <li><a href="{{ url_for('webPage.postTable') }}">Pots</a></li>
+              </ul>
+              </li>
+              
             </ul>
           </nav></strong>
       </div>

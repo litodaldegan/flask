@@ -1,5 +1,10 @@
-<!DOCTYPE html>
-<html>
+{% if user %}
+    {% extends "layoutL.html" %}
+{% else %}
+    {% extends "layout.html" %}
+{% endif %}
+
+{% block content %}
 
     <head>
         <title>Tabela de posts</title>
@@ -31,6 +36,7 @@
     </head>
 
     <body>
+    <br/>
         <div class="container">
             <table id="jsontable" class="display table table-bordered" cellspacing="0" width="100%">
                 <thead>
@@ -50,4 +56,4 @@
         </div>
     </body>
 
-</html>
+{% endblock %}

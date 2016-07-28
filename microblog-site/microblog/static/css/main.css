@@ -11,9 +11,9 @@ body {
  
 header h1.logo {
   margin: 0;
-  margin-top: -5px;
+  margin-top: -7px;
   margin-bottom: 5px;
-  margin-left: 5px;
+  margin-left: 13px;
   font-size: 1.7em;
   color: #fff;
   text-transform: uppercase;
@@ -156,7 +156,7 @@ h3.post {
 }
 
 #menu ul a {    
-    padding: 10px;
+    padding: 20px;
     height: auto;
     line-height: 1;
     display: block;
