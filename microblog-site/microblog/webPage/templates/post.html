@@ -8,8 +8,8 @@
       <p>
           Your post:<br>  
           {{ form.post(size=140) }}
-          {% for erro in form.post.errors %}
-            <span style="color: red">[{{error}}]</span>
+          {% for error in form.post.errors %}
+            <br/><span style="color: red">[{{error}}]</span>
           {% endfor %}
       </p>
       <p><input type="submit" value="Post"></p>

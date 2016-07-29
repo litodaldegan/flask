@@ -11,7 +11,7 @@ class SigninForm(Form):
 
 # form to be use in the post page
 class SubmitPost(Form):
-	post = StringField('post', validators=[DataRequired()])
+	post = StringField('post', [validators.Length(min=1, max=225)])
 
 
 # form to be use in the login page
