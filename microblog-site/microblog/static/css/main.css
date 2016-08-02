@@ -25,6 +25,10 @@ header h1.logo:hover {
   text-decoration: none;
 }
 
+/*
+ * Button to login with facebook
+ */
+
 button.loginButton {
   background-color: transparent;
   background-repeat: no-repeat;
@@ -40,7 +44,7 @@ button.loginButton {
  * Center the body content
  */
   
-.container {
+.container.forum {
   width: 940px;
   margin: 0 auto;
 }
